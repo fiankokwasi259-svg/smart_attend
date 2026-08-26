@@ -1,17 +1,35 @@
-# smart_attend
+# SmartAttend
 
-A new Flutter project.
+SmartAttend is a Flutter attendance app with lecturer and student flows, backed by a small Node.js/Express authentication API.
 
-## Getting Started
+## Project layout
 
-This project is a starting point for a Flutter application.
+- Flutter app: Projects/smart_attend
+- API server: Projects/smart_attend/server.js
+- Runtime user store: Projects/smart_attend/data/users.json (created automatically and ignored by Git)
 
-A few resources to get you started if this is your first Flutter project:
+## Run the backend
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+From Projects/smart_attend:
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+npm install
+npm start
+
+The API listens on port 5000 by default. Set PORT to use another port.
+
+## Run the Flutter app
+
+From Projects/smart_attend:
+
+flutter pub get
+flutter run --dart-define=API_BASE_URL=http://<your-computer-ip>:5000
+
+The API URL must be reachable from the device or emulator running Flutter. The app defaults to the existing development address when no API_BASE_URL is supplied.
+
+## Authentication API
+
+- POST /api/auth/register creates a lecturer or student account.
+- POST /api/auth/login authenticates an account and returns a user profile plus token.
+- GET /api/health checks that the server is running.
+
+Passwords are hashed with Node's built-in scrypt implementation. The JSON user store is suitable for local development; use a real database before production deployment.
