@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../services/api_service.dart';
 import 'lecturer_dashboard_screen.dart';
+import 'lecturer_register_screen.dart';
 
 class LecturerLoginScreen extends StatefulWidget {
   const LecturerLoginScreen({super.key});
@@ -30,6 +31,7 @@ class _LecturerLoginScreenState extends State<LecturerLoginScreen> {
       final result = await ApiService.login(
         email: _emailController.text.trim(),
         password: _passwordController.text,
+        expectedRole: 'lecturer',
       );
 
       if (!mounted) return;
@@ -221,7 +223,14 @@ class _LecturerLoginScreenState extends State<LecturerLoginScreen> {
                         style: TextStyle(color: Color(0xFF94A3B8)),
                       ),
                       TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const LecturerRegisterScreen(),
+                            ),
+                          );
+                        },
                         child: const Text(
                           'Register',
                           style: TextStyle(
