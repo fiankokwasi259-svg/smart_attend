@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'student_register_screen.dart';
+import '../../services/api_service.dart';
 import 'student_dashboard_screen.dart';
 
 class StudentLoginScreen extends StatefulWidget {
@@ -23,20 +24,31 @@ class _StudentLoginScreenState extends State<StudentLoginScreen> {
     super.dispose();
   }
 
-  void _handleLogin() {
-    if (_formKey.currentState!.validate()) {
-      setState(() => _isLoading = true);
-      Future.delayed(const Duration(seconds: 2), () {
-        if (mounted) {
-          setState(() => _isLoading = false);
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (_) => const StudentDashboardScreen(),
-            ),
-          );
-        }
-      });
+  Future<void> _handleLogin() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    setState(() => _isLoading = true);
+    final result = await ApiService.login(
+      email: _emailController.text.trim(),
+      password: _passwordController.text,
+      expectedRole: 'student',
+    );
+
+    if (!mounted) return;
+    setState(() => _isLoading = false);
+
+    if (result['success'] == true) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const StudentDashboardScreen()),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(result['error'].toString()),
+          backgroundColor: const Color(0xFFEF4444),
+        ),
+      );
     }
   }
 
